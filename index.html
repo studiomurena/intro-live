@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Murena - Jazz Highlander</title>
+    <!-- Carica Phaser da internet automaticamente -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        /* Questo CSS toglie i margini e centra il gioco su sfondo nero */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; 
+        }
+        canvas {
+            display: block;
+            /* Fa in modo che il gioco si adatti allo schermo mantenendo le proporzioni */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <!-- Avvia il nostro script -->
+    <script src="game.js"></script>
+</body>
+</html>
