@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio Murena - Jazz Highlander</title>
-    <!-- Carica Phaser da internet automaticamente -->
+    <!-- Carica Phaser e il Font del Terminale -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
     <style>
-        /* Questo CSS toglie i margini e centra il gioco su sfondo nero */
         body {
             margin: 0;
             padding: 0;
@@ -17,18 +18,70 @@
             align-items: center;
             height: 100vh;
             overflow: hidden; 
+            font-family: 'VT323', monospace;
         }
-        canvas {
-            display: block;
-            /* Fa in modo che il gioco si adatti allo schermo mantenendo le proporzioni */
+
+        /* --- STILE TERMINALE DOS --- */
+        #terminale {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            padding: 50px;
+            box-sizing: border-box;
+            z-index: 999; /* Sta sopra al gioco */
+        }
+
+        .testo-bianco { color: #fff; font-size: 32px; }
+        .testo-verde { color: #39ff14; font-size: 38px; text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
+        .testo-verde-grande { color: #39ff14; font-size: 55px; text-shadow: 0 0 10px rgba(57, 255, 20, 0.8); }
+        .testo-rosso { color: #ff003c; font-size: 45px; text-shadow: 0 0 15px rgba(255, 0, 60, 0.8); font-weight: bold; }
+        
+        #cursore {
+            display: inline-block;
+            width: 20px; height: 35px;
+            background-color: #fff;
+            animation: lampeggia 1s step-end infinite;
+            vertical-align: bottom;
+        }
+
+        @keyframes lampeggia { 50% { opacity: 0; } }
+
+        /* --- EFFETTO GLITCH COLLASSO --- */
+        .glitch-attivo {
+            animation: glitch-anim 0.3s infinite;
+        }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0) scale(1); filter: hue-rotate(0deg); }
+            20% { transform: translate(-10px, 10px) scale(1.05); filter: invert(1); color: red; }
+            40% { transform: translate(10px, -10px) scale(1.1); }
+            60% { transform: translate(-20px, 0) scale(1); filter: hue-rotate(180deg); color: blue; }
+            80% { transform: translate(20px, 10px) scale(1.3); filter: blur(4px); }
+            100% { transform: translate(0) scale(1.5); opacity: 0; }
+        }
+
+        /* --- CONTENITORE GIOCO --- */
+        #game-container {
+            display: none; /* Invisibile finché non finisce l'intro */
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
+        canvas { display: block; }
     </style>
 </head>
 <body>
-    <!-- Avvia il nostro script -->
+
+    <!-- LA SCHERMATA DEL TERMINALE -->
+    <div id="terminale">
+        <span id="testo-schermo"></span><span id="cursore"></span>
+    </div>
+
+    <!-- IL VIDEOGIOCO (Nascosto) -->
+    <div id="game-container"></div>
+
+    <!-- Il nostro script unito -->
     <script src="game.js"></script>
+
 </body>
 </html>
