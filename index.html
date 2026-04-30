@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Murena - Jazz Highlander Final Intro</title>
+    <title>Studio Murena - Intro Live Jazz Highlander</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #050505;
+            background-color: #000;
             display: flex;
             justify-content: flex-start;
             align-items: flex-start;
@@ -19,95 +19,96 @@
             font-family: 'VT323', monospace;
         }
 
-        /* --- EFFETTI MONITOR CRT --- */
+        /* --- EFFETTI MONITOR CRT ESTREMI --- */
         #crt-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 900;
             pointer-events: none;
             background: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
             background-size: 100% 4px, 4px 100%;
         }
 
-        #crt-vignette {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 901;
-            pointer-events: none;
-            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);
+        /* --- TESTO ULTRA LUMINOSO --- */
+        .glow-verde {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+            font-size: 48px;
         }
 
-        /* --- TERMINALE --- */
+        .glow-verde-cubitale {
+            color: #00ff41;
+            text-shadow: 0 0 15px #00ff41, 0 0 30px #00ff41;
+            font-size: 75px;
+            line-height: 1.1;
+        }
+
+        .glow-codice {
+            color: #ffaa00; /* Arancione ambra per il codice forzato */
+            text-shadow: 0 0 10px #ffaa00;
+            font-size: 40px;
+        }
+
+        .glow-highlander {
+            color: #ff3131;
+            text-shadow: 0 0 20px #ff3131, 0 0 40px #ff3131, 0 0 60px #ff3131;
+            font-size: 110px;
+            font-weight: bold;
+        }
+
         #terminale {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             padding: 60px;
             box-sizing: border-box;
             z-index: 10;
-            animation: flicker-monitor 0.2s infinite;
         }
 
-        /* Container per centrare le frasi finali */
         #container-centrale {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             width: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        @keyframes flicker-monitor { 0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
-
-        .testo-bianco { color: #ececec; font-size: 42px; text-shadow: -1px 0 1px red, 1px 0 1px blue; }
-        .testo-verde { color: #39ff14; font-size: 48px; text-shadow: 0 0 8px rgba(57,255,20,0.5); }
-        .testo-verde-grande { color: #39ff14; font-size: 65px; text-shadow: 0 0 12px rgba(57,255,20,0.7); }
-        
-        /* Stile per il gran finale */
-        .testo-finale { 
-            color: #ff003c; 
-            font-size: 90px; 
-            text-shadow: 0 0 25px rgba(255,0,60,1), -4px 0 2px rgba(0,255,0,0.5), 4px 0 2px rgba(0,0,255,0.5); 
-            font-weight: bold;
-            display: block;
-            margin-bottom: 20px;
-        }
-        
         #cursore {
             display: inline-block;
             width: 25px; height: 45px;
-            background-color: #39ff14;
+            background-color: #00ff41;
             animation: lampeggia 1s step-end infinite;
             vertical-align: bottom;
-            box-shadow: 0 0 10px #39ff14;
+            box-shadow: 0 0 15px #00ff41;
         }
 
         @keyframes lampeggia { 50% { opacity: 0; } }
 
         /* --- GLITCH --- */
         .glitch-attivo { animation: glitch-anim 0.15s infinite; }
-
         @keyframes glitch-anim {
             0% { transform: translate(0); filter: hue-rotate(0deg); }
-            20% { transform: translate(-30px, 20px); filter: invert(1); letter-spacing: 10px; }
-            40% { transform: translate(30px, -20px) skew(20deg); }
-            60% { transform: translate(-40px, 0); filter: hue-rotate(180deg); }
-            100% { transform: translate(0) scale(1.8); opacity: 0; }
+            20% { transform: translate(-30px, 20px) scale(1.1); filter: invert(1); }
+            40% { transform: translate(30px, -20px) skew(10deg); }
+            100% { transform: translate(0) scale(2); opacity: 0; }
         }
 
         #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; display: none; }
-        #flash-luce { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 9999; opacity: 0; transition: opacity 0.1s ease-out; }
+        #flash-luce { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 9999; opacity: 0; }
     </style>
 </head>
 <body>
 
     <div id="crt-overlay"></div>
-    <div id="crt-vignette"></div>
 
     <div id="terminale">
-        <div id="area-testo">
-            <span id="testo-schermo"></span><span id="cursore"></span>
+        <div id="area-dos">
+            <span id="testo-dos"></span><span id="cursore"></span>
         </div>
         <div id="container-centrale"></div>
     </div>
@@ -116,91 +117,90 @@
     <div id="flash-luce"></div>
 
     <script>
+        // MODALITA_TEST = true per vedere tutto in 10 secondi
         const MODALITA_TEST = false; 
         const mTempo = MODALITA_TEST ? 0.1 : 1; 
 
-        const terminaleDiv = document.getElementById('terminale');
-        const testoSchermo = document.getElementById('testo-schermo');
+        const testoDos = document.getElementById('testo-dos');
         const containerCentrale = document.getElementById('container-centrale');
         const cursore = document.getElementById('cursore');
+        const terminale = document.getElementById('terminale');
         const canvasMatrix = document.getElementById('matrix-canvas');
         const flashLuce = document.getElementById('flash-luce');
 
         const pausa = (ms) => new Promise(resolve => setTimeout(resolve, ms * mTempo));
 
-        async function scrivi(testo, classeCss, target, ritardoTasto = 40) {
-            let bloccoTesto = document.createElement('span');
-            bloccoTesto.className = classeCss;
-            target.appendChild(bloccoTesto);
-            cursore.style.backgroundColor = getComputedStyle(bloccoTesto).color;
-            cursore.style.boxShadow = `0 0 10px ${getComputedStyle(bloccoTesto).color}`;
+        async function scrivi(testo, classeCss, target, velocita = 40) {
+            let span = document.createElement('span');
+            span.className = classeCss;
+            target.appendChild(span);
+            // Il cursore segue il colore del testo corrente
+            cursore.style.backgroundColor = getComputedStyle(span).color;
+            cursore.style.boxShadow = `0 0 15px ${getComputedStyle(span).color}`;
 
-            for (let i = 0; i < testo.length; i++) {
-                if (testo[i] === '\n') {
-                    bloccoTesto.appendChild(document.createElement('br'));
+            for (let char of testo) {
+                if (char === '\n') {
+                    span.appendChild(document.createElement('br'));
                 } else {
-                    bloccoTesto.innerHTML += testo[i];
+                    span.innerHTML += char;
                 }
-                await pausa(ritardoTasto + (Math.random() * 30 - 15));
+                await pausa(velocita + (Math.random() * 20 - 10));
             }
         }
 
         async function avviaIntro() {
-            // [ BOOT ]
-            await scrivi("MURENA_OS v.9.5.1 BIOS Revision 4.2\n", "testo-bianco", testoSchermo, 15);
+            // [ 0:00 ] INIZIO: TESTO DOS RAPIDO
+            await scrivi("ERRORE DI SISTEMA: MATERIA ORGANICA RILEVATA.\n", "glow-verde", testoDos, 20);
             await pausa(1000);
-            await scrivi("Loading audio drivers... OK\n", "testo-bianco", testoSchermo, 15);
+            await scrivi("ANALISI IN CORSO: Carma, Ferrazzi, Gazzola, Nan, Falcon.\n", "glow-verde", testoDos, 20);
+            await pausa(1500);
+            await scrivi("STATO: Carne, ossa, sudore. OBSOLETI.\n", "glow-verde", testoDos, 50);
+            await pausa(4000);
+
+            // [ 0:15 ] CANCELLA E CENTRA: TESTO CUBITALE
+            testoDos.innerHTML = "";
+            await scrivi("LA REALTÀ È COMPROMESSA.\n", "glow-verde-cubitale", containerCentrale, 60);
+            await pausa(1500);
+            await scrivi("Per sopravvivere al collasso, dovete rinunciare al vostro corpo.\n", "glow-verde-cubitale", containerCentrale, 60);
             await pausa(2500);
-            await scrivi("FATAL ERROR.\n", "testo-bianco", testoSchermo, 15);
-            await pausa(3000);
             
-            testoSchermo.innerHTML = "";
-            await pausa(2000);
-
-            // [ IA ANALYSIS ]
-            await scrivi("> INIZIALIZZAZIONE PROTOCOLLO DI PURGA.\n", "testo-verde", testoSchermo, 60);
-            await pausa(1500);
-            await scrivi("> Target agganciati: CARMA, FERRAZ, MAURI, NAN, FALCON.\n", "testo-verde", testoSchermo, 40);
-            await pausa(2000);
-            await scrivi("> ERRORE: LA CARNE È DEBOLE.\n", "testo-verde", testoSchermo, 80);
-            await pausa(3000);
-
-            // [ LA SFIDA ]
-            testoSchermo.innerHTML = ""; 
-            await scrivi("ACCETTATE LA DIGITALIZZAZIONE?\n", "testo-verde-grande", testoSchermo, 80);
-            await scrivi("Digitare [Y] per trascendere - [N] per morire.\n", "testo-verde-grande", testoSchermo, 80);
-            await scrivi("> ", "testo-verde-grande", testoSchermo, 20);
+            // LA DOMANDA
+            await scrivi("\nAvete il coraggio di abbandonare la materia e diventare puro codice?\n", "glow-verde", containerCentrale, 40);
+            await scrivi("[Y] Accetta la digitalizzazione / [N] Muori nell'oblio\n", "glow-verde", containerCentrale, 40);
+            await scrivi("In attesa di input... _", "glow-verde", containerCentrale, 10);
             
-            await pausa(6000); 
+            // Suspense (Silenzio / Battito)
+            await pausa(8000);
 
-            // [ OVERRIDE & GRAN FINALE ]
-            await scrivi("Y\n", "testo-finale", testoSchermo, 200);
+            // [ 0:45 ] LA RISPOSTA - FORZATURA
+            containerCentrale.innerHTML = "";
+            await scrivi("> sudo force_override --target=CORE_SYSTEM\n", "glow-codice", containerCentrale, 10);
+            await pausa(500);
+            await scrivi("> FORZATURA DI SISTEMA INIZIATA...\n\n", "glow-verde", containerCentrale, 20);
             await pausa(1500);
-            
-            // PULIZIA TOTALE PER IL MESSAGGIO FINALE
-            testoSchermo.innerHTML = "";
-            cursore.style.display = "none";
-            await pausa(1000);
 
-            // FRASI A TUTTO SCHERMO CENTRATE
-            await scrivi("> NOI NON VENIAMO CANCELLATI", "testo-finale", containerCentrale, 100);
-            await pausa(1500);
-            containerCentrale.appendChild(document.createElement('br'));
-            await scrivi("> NOI SIAMO I JAZZ HIGHLANDER", "testo-finale", containerCentrale, 120);
-
-            // [ IL COLLASSO ]
+            // NOI NON MORIAMO
+            await scrivi("NOI NON MORIAMO.\n", "glow-highlander", containerCentrale, 80);
             await pausa(2000);
-            terminaleDiv.classList.add("glitch-attivo");
+            
+            // NOI SIAMO I JAZZ HIGHLANDER
+            await scrivi("NOI SIAMO I JAZZ HIGHLANDER.", "glow-highlander", containerCentrale, 100);
+
+            // [ 1:10 ] GLITCH E MATRIX
+            await pausa(2500);
+            terminale.classList.add("glitch-attivo");
             canvasMatrix.style.display = "block";
             avviaMatrixRain();
 
-            await pausa(1800 * mTempo); 
-            terminaleDiv.style.display = "none";
-            await pausa(2500); 
+            await pausa(2000 * mTempo);
+            terminale.style.display = "none";
+            
+            // Pioggia per qualche secondo
+            await new Promise(r => setTimeout(r, 3000));
 
             // FLASH FINALE
             flashLuce.style.opacity = "1";
-            await pausa(150);
+            await pausa(200);
             flashLuce.style.transition = "opacity 3s ease-in";
             flashLuce.style.opacity = "0";
             await pausa(3000);
@@ -211,24 +211,24 @@
             const ctx = canvasMatrix.getContext('2d');
             canvasMatrix.width = window.innerWidth;
             canvasMatrix.height = window.innerHeight;
-            const caratteri = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓ';
+            const chars = 'JAZZHIGHLANDER01010101ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ';
             const fontSize = 30;
-            const colonne = canvasMatrix.width / fontSize;
-            const gocce = Array(Math.floor(colonne)).fill(1);
+            const columns = canvasMatrix.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
 
-            function disegna() {
+            function draw() {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
                 ctx.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
-                ctx.fillStyle = '#39ff14';
+                ctx.fillStyle = '#00ff41';
                 ctx.font = fontSize + 'px monospace';
-                gocce.forEach((y, i) => {
-                    const testo = caratteri.charAt(Math.floor(Math.random() * caratteri.length));
-                    ctx.fillText(testo, i * fontSize, y * fontSize);
-                    if (y * fontSize > canvasMatrix.height && Math.random() > 0.975) gocce[i] = 0;
-                    gocce[i]++;
+                drops.forEach((y, i) => {
+                    const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                    ctx.fillText(text, i * fontSize, y * fontSize);
+                    if (y * fontSize > canvasMatrix.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
                 });
             }
-            setInterval(disegna, 30);
+            setInterval(draw, 33);
         }
 
         avviaIntro();
