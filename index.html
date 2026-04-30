@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Murena - Intro Live</title>
+    <title>Studio Murena - Intro Live 75s</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #000;
+            background-color: #050505; /* Nero non purissimo per dare l'idea del monitor acceso */
             display: flex;
             justify-content: flex-start;
             align-items: flex-start;
@@ -19,42 +19,90 @@
             font-family: 'VT323', monospace;
         }
 
+        /* --- LENTE TUBO CATODICO (Scanlines, RGB, Vignetta) --- */
+        #crt-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 900; /* Sta sopra a tutto tranne il flash finale */
+            pointer-events: none; /* Non blocca eventuali click */
+            /* Scanlines orizzontali e griglia pixel RGB */
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+            background-size: 100% 6px, 6px 100%; /* Spessore righe */
+        }
+
+        /* Vignettatura (Bordi più scuri) */
+        #crt-vignette {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 901;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+        }
+
         /* --- STILE TERMINALE DOS --- */
         #terminale {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000;
             padding: 50px;
             box-sizing: border-box;
             z-index: 10; 
+            /* Sfarfallio leggerissimo di fondo tipico dei vecchi monitor */
+            animation: flicker-monitor 0.15s infinite;
         }
 
-        .testo-bianco { color: #fff; font-size: 40px; }
-        .testo-verde { color: #39ff14; font-size: 45px; text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
-        .testo-verde-grande { color: #39ff14; font-size: 65px; text-shadow: 0 0 10px rgba(57, 255, 20, 0.8); }
-        .testo-rosso { color: #ff003c; font-size: 60px; text-shadow: 0 0 15px rgba(255, 0, 60, 0.8); font-weight: bold; }
+        @keyframes flicker-monitor {
+            0% { opacity: 0.98; }
+            50% { opacity: 1; }
+            100% { opacity: 0.99; }
+        }
+
+        /* Aggiunta di aberrazione cromatica (sbavatura rosso/blu) sui testi per effetto retro */
+        .testo-bianco { 
+            color: #ececec; 
+            font-size: 40px; 
+            text-shadow: 0 0 5px rgba(255,255,255,0.5), -2px 0 1px rgba(255,0,0,0.5), 2px 0 1px rgba(0,0,255,0.5);
+        }
+        .testo-verde { 
+            color: #39ff14; 
+            font-size: 45px; 
+            text-shadow: 0 0 10px rgba(57,255,20,0.6), -2px 0 1px rgba(255,0,0,0.5), 2px 0 1px rgba(0,0,255,0.5); 
+        }
+        .testo-verde-grande { 
+            color: #39ff14; 
+            font-size: 65px; 
+            text-shadow: 0 0 12px rgba(57,255,20,0.8), -3px 0 1px rgba(255,0,0,0.5), 3px 0 1px rgba(0,0,255,0.5); 
+        }
+        .testo-rosso { 
+            color: #ff003c; 
+            font-size: 60px; 
+            text-shadow: 0 0 15px rgba(255,0,60,0.8), -3px 0 1px rgba(0,255,0,0.5), 3px 0 1px rgba(0,0,255,0.5); 
+            font-weight: bold; 
+        }
         
         #cursore {
             display: inline-block;
             width: 25px; height: 45px;
-            background-color: #fff;
+            background-color: #39ff14;
             animation: lampeggia 1s step-end infinite;
             vertical-align: bottom;
+            box-shadow: 0 0 10px #39ff14;
         }
 
         @keyframes lampeggia { 50% { opacity: 0; } }
 
         /* --- EFFETTO GLITCH DEVASTANTE --- */
         .glitch-attivo {
-            animation: glitch-anim 0.2s infinite;
+            animation: glitch-anim 0.15s infinite;
         }
 
         @keyframes glitch-anim {
             0% { transform: translate(0) scale(1); filter: hue-rotate(0deg); letter-spacing: normal; }
-            20% { transform: translate(-15px, 15px) scale(1.05); filter: invert(1); color: red; letter-spacing: 5px; }
-            40% { transform: translate(15px, -15px) scale(1.1) skew(10deg); }
-            60% { transform: translate(-25px, 0) scale(1.2); filter: hue-rotate(180deg); color: blue; }
-            80% { transform: translate(25px, 15px) scale(1.3) skew(-15deg); filter: blur(4px); }
+            20% { transform: translate(-20px, 15px) scale(1.05); filter: invert(1); color: red; letter-spacing: 5px; }
+            40% { transform: translate(20px, -15px) scale(1.1) skew(15deg); }
+            60% { transform: translate(-30px, 0) scale(1.2); filter: hue-rotate(180deg); color: blue; }
+            80% { transform: translate(30px, 20px) scale(1.3) skew(-20deg); filter: blur(5px); }
             100% { transform: translate(0) scale(1.5); opacity: 0; }
         }
 
@@ -63,8 +111,8 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 5; /* Dietro al terminale, pronto ad apparire */
-            display: none; /* Nascosto all'inizio */
+            z-index: 5; 
+            display: none; 
         }
 
         /* --- FLASH LUMINOSO FINALE --- */
@@ -73,14 +121,18 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             background-color: #fff;
-            z-index: 999;
+            z-index: 9999;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.1s ease-out; /* Flash velocissimo */
+            transition: opacity 0.1s ease-out; 
         }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAYS CRT (Tubo Catodico) -->
+    <div id="crt-overlay"></div>
+    <div id="crt-vignette"></div>
 
     <!-- IL TERMINALE DOS -->
     <div id="terminale">
@@ -90,14 +142,14 @@
     <!-- IL CANVAS PER LA PIOGGIA MATRIX -->
     <canvas id="matrix-canvas"></canvas>
 
-    <!-- IL FLASH FINALE CHE ILLUMINA IL LOCALE -->
+    <!-- IL FLASH FINALE -->
     <div id="flash-luce"></div>
 
     <script>
         // ==========================================
         // PANNELLO DI CONTROLLO
         // ==========================================
-        const MODALITA_TEST = true; // Metti FALSE per la durata reale di 1 minuto
+        const MODALITA_TEST = false; // Metti su TRUE per testare veloce. Su FALSE dura 1 minuto e 15 secondi.
         const mTempo = MODALITA_TEST ? 0.1 : 1; 
 
         // Elementi della pagina
@@ -113,7 +165,10 @@
             let bloccoTesto = document.createElement('span');
             bloccoTesto.className = classeCss;
             testoSchermo.appendChild(bloccoTesto);
+            
+            // Il cursore prende il colore del blocco testo per realismo
             cursore.style.backgroundColor = getComputedStyle(bloccoTesto).color;
+            cursore.style.boxShadow = `0 0 10px ${getComputedStyle(bloccoTesto).color}`;
 
             for (let i = 0; i < testo.length; i++) {
                 if (testo[i] === '\n') {
@@ -121,103 +176,99 @@
                 } else {
                     bloccoTesto.innerHTML += testo[i];
                 }
-                let randomRitardo = ritardoTasto + (Math.random() * 20 - 10);
+                let randomRitardo = ritardoTasto + (Math.random() * 30 - 15);
                 await pausa(randomRitardo);
             }
         }
 
         async function avviaIntro() {
-            // 0:00 - 0:10 | IL FALSO BOOT
-            await scrivi("MURENA_OS v.9.5.1 BIOS Revision 4.2\n", "testo-bianco", 10);
-            await pausa(500);
-            await scrivi("Checking RAM... 640K OK\n", "testo-bianco", 10);
-            await pausa(600);
-            await scrivi("Loading audio drivers... OK\n", "testo-bianco", 10);
+            // [ 0:00 - 0:15 ] IL FALSO BOOT (Dilatato per la musica)
+            await scrivi("MURENA_OS v.9.5.1 BIOS Revision 4.2\n", "testo-bianco", 15);
             await pausa(1000);
-            await scrivi("Loading instruments... ", "testo-bianco", 20);
+            await scrivi("Checking RAM... 640K OK\n", "testo-bianco", 15);
             await pausa(1500);
-            await scrivi("FATAL ERROR.\n", "testo-bianco", 10);
-            await pausa(2000); 
+            await scrivi("Loading audio drivers... OK\n", "testo-bianco", 15);
+            await pausa(2000);
+            await scrivi("Loading instruments... ", "testo-bianco", 30);
+            await pausa(2500);
+            await scrivi("FATAL ERROR.\n", "testo-bianco", 15);
+            await pausa(3500); // Lunga pausa post-errore
             
             testoSchermo.innerHTML = "";
-            await pausa(1500);
+            await pausa(2000);
 
-            // 0:10 - 0:30 | L'ANALISI DELL'IA
-            await scrivi("> INIZIALIZZAZIONE PROTOCOLLO DI PURGA.\n", "testo-verde", 50);
-            await pausa(1000);
-            await scrivi("> RILEVAMENTO ANOMALIE SUL PALCO...\n", "testo-verde", 50);
-            await pausa(800);
-            await scrivi("> Target agganciati: CARMA, FERRAZ, MAURI, NAN, FALCON.\n", "testo-verde", 30);
-            await pausa(1200);
-            await scrivi("> Analisi composizione: 70% Acqua, 30% Materia deperibile.\n", "testo-verde", 40);
+            // [ 0:15 - 0:40 ] L'ANALISI DELL'IA (Molto lenta e inquietante)
+            await scrivi("> INIZIALIZZAZIONE PROTOCOLLO DI PURGA.\n", "testo-verde", 70);
             await pausa(1500);
-            await scrivi("> ERRORE: LA CARNE È DEBOLE. IL JAZZ RICHIEDE PERFEZIONE DIGITALE.\n", "testo-verde", 60);
-            await pausa(3000);
+            await scrivi("> RILEVAMENTO ANOMALIE SUL PALCO...\n", "testo-verde", 70);
+            await pausa(1500);
+            await scrivi("> Target agganciati: CARMA, FERRAZ, MAURI, NAN, FALCON.\n", "testo-verde", 50);
+            await pausa(2000);
+            await scrivi("> Analisi composizione: 70% Acqua, 30% Materia deperibile.\n", "testo-verde", 50);
+            await pausa(2500);
+            await scrivi("> ERRORE: LA CARNE È DEBOLE. IL JAZZ RICHIEDE PERFEZIONE DIGITALE.\n", "testo-verde", 80);
+            await pausa(4000); // Fa assimilare il messaggio al pubblico
 
-            // 0:30 - 0:45 | LA SFIDA
+            // [ 0:40 - 0:55 ] LA SFIDA
             testoSchermo.innerHTML = ""; 
-            await scrivi("SISTEMA COMPROMESSO.\n", "testo-verde-grande", 60);
-            await scrivi("Per suonare stasera dovete abbandonare i vostri corpi.\n", "testo-verde-grande", 60);
-            await scrivi("Accettate la digitalizzazione?\n", "testo-verde-grande", 60);
-            await scrivi("Digitare [Y] per trascendere - [N] per essere cancellati.\n", "testo-verde-grande", 60);
-            await scrivi("> ", "testo-verde-grande", 10);
+            await scrivi("SISTEMA COMPROMESSO.\n", "testo-verde-grande", 80);
+            await scrivi("Per suonare stasera dovete abbandonare i vostri corpi.\n", "testo-verde-grande", 80);
+            await scrivi("Accettate la digitalizzazione?\n", "testo-verde-grande", 80);
+            await scrivi("Digitare [Y] per trascendere - [N] per essere cancellati.\n", "testo-verde-grande", 80);
+            await scrivi("> ", "testo-verde-grande", 20);
             
-            await pausa(5000); // Suspense...
+            // Tensione pura. Il cursore lampeggia per ben 7 secondi.
+            await pausa(7000); 
 
-            // 0:45 - 0:55 | L'OVERRIDE
-            await scrivi("Y\n", "testo-rosso", 100);
-            await pausa(500);
-            await scrivi("> INIZIALIZZAZIONE UPLOAD...\n", "testo-rosso", 20);
-            await pausa(800);
-            await scrivi("> ATTENZIONE: FILE TROPPO PESANTI.\n", "testo-rosso", 20);
-            await pausa(800);
-            await scrivi("> OVERRIDE DI SISTEMA IN CORSO...\n", "testo-rosso", 10);
+            // [ 0:55 - 1:10 ] L'OVERRIDE (Veloce e rosso)
+            await scrivi("Y\n", "testo-rosso", 150);
             await pausa(1000);
-            await scrivi("> NOI NON VENIAMO CANCELLATI.\n", "testo-rosso", 80);
-            await pausa(1000);
-            await scrivi("> NOI SIAMO I JAZZ HIGHLANDER.", "testo-rosso", 100);
+            await scrivi("> INIZIALIZZAZIONE UPLOAD...\n", "testo-rosso", 30);
+            await pausa(1200);
+            await scrivi("> ATTENZIONE: FILE TROPPO PESANTI.\n", "testo-rosso", 30);
+            await pausa(1200);
+            await scrivi("> OVERRIDE DI SISTEMA IN CORSO...\n", "testo-rosso", 20);
+            await pausa(1500);
+            await scrivi("> NOI NON VENIAMO CANCELLATI.\n", "testo-rosso", 90);
+            await pausa(1500);
+            await scrivi("> NOI SIAMO I JAZZ HIGHLANDER.", "testo-rosso", 120);
 
-            // 0:55 - 1:00 | IL COLLASSO & MATRIX RAIN
+            // [ 1:10 - 1:15 ] IL COLLASSO & MATRIX RAIN
             await pausa(1000);
             
-            // 1. Spacca lo schermo DOS (GLITCH)
             terminaleDiv.classList.add("glitch-attivo");
             
-            // 2. Prepara la pioggia Matrix in background
             canvasMatrix.style.display = "block";
             avviaMatrixRain();
 
-            // Lascia il glitch visibile per mezzo secondo, poi distrugge il DOS
-            await pausa(800 * mTempo); 
+            // Glitch per 1.5 secondi
+            await pausa(1500 * mTempo); 
             terminaleDiv.style.display = "none";
 
-            // Lascia cadere la pioggia Matrix per un paio di secondi
-            // NOTA: Questo NON è scalato dal mTempo così in test vedi l'effetto
+            // Lascia la pioggia Matrix 
             await new Promise(resolve => setTimeout(resolve, 2500)); 
 
-            // 3. FLASH LUMINOSO FINALE CHE ACCECA IL LOCALE!
+            // FLASH!
             flashLuce.style.opacity = "1";
             
-            // Dopo il flash, puoi decidere di far tornare lo schermo nero 
-            // o lasciarlo bianco scendendo piano di opacità.
             await new Promise(resolve => setTimeout(resolve, 150)); 
             
-            // Lo facciamo tornare nero lentamente (perfetto per lo stacco prima del pezzo)
-            flashLuce.style.transition = "opacity 2s ease-in";
+            flashLuce.style.transition = "opacity 2.5s ease-in";
             flashLuce.style.opacity = "0";
-            canvasMatrix.style.display = "none"; // Spegne matrix
+            canvasMatrix.style.display = "none"; 
         }
 
         // ==========================================
-        // MOTORE PIOGGIA MATRIX (CANVAS HTML5)
+        // MOTORE PIOGGIA MATRIX (Migliorato)
         // ==========================================
         function avviaMatrixRain() {
             const ctx = canvasMatrix.getContext('2d');
             canvasMatrix.width = window.innerWidth;
             canvasMatrix.height = window.innerHeight;
 
+            // Misto lettere, numeri e katakana
             const caratteri = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
-            const fontSize = 24;
+            const fontSize = 28; // Pixel leggermente più grandi
             const colonne = canvasMatrix.width / fontSize;
             const gocce = [];
 
@@ -226,26 +277,24 @@
             }
 
             function disegnaPioggia() {
-                // Sfondo nero semi-trasparente per creare l'effetto scia
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                // Sfondo nero che "pulisce" frame per frame creando la scia
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
                 ctx.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
                 
-                // Colore e font del codice
-                ctx.fillStyle = '#39ff14'; // Verde fluo
+                ctx.fillStyle = '#39ff14'; // Verde Matrix
                 ctx.font = fontSize + 'px monospace';
 
                 for(let i = 0; i < gocce.length; i++) {
                     const testo = caratteri.charAt(Math.floor(Math.random() * caratteri.length));
                     ctx.fillText(testo, i * fontSize, gocce[i] * fontSize);
                     
-                    // Se la goccia esce dallo schermo e aggiungiamo un po' di random, riparte da zero
                     if(gocce[i] * fontSize > canvasMatrix.height && Math.random() > 0.975) {
                         gocce[i] = 0;
                     }
                     gocce[i]++;
                 }
             }
-            setInterval(disegnaPioggia, 33);
+            setInterval(disegnaPioggia, 35);
         }
 
         // START!
