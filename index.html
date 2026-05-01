@@ -31,7 +31,7 @@
         }
 
         /* --- STILI TESTO --- */
-        .testo-bios { color: #ffffff; font-size: 35px; opacity: 0.9; }
+        .testo-bios { color: #ffffff; font-size: 35px; opacity: 0.8; }
         
         .glow-verde {
             color: #00ff41;
@@ -42,23 +42,33 @@
         .glow-verde-cubitale {
             color: #00ff41;
             text-shadow: 0 0 15px #00ff41;
-            font-size: 75px;
+            font-size: 80px;
             line-height: 1.1;
+        }
+
+        /* LA DOMANDA DELL'IA - MASSIMA DIMENSIONE */
+        .glow-verde-domanda {
+            color: #00ff41;
+            text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+            font-size: 100px;
+            line-height: 1;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         .glow-codice {
             color: #ffaa00;
             text-shadow: 0 0 10px #ffaa00;
-            font-size: 40px;
+            font-size: 45px;
+            font-weight: bold;
         }
 
-        /* ROSSO ALTO CONTRASTO - MENO LUMEN AI BORDI */
         .glow-highlander {
             color: #ff0000;
-            text-shadow: 4px 4px 0px #440000; /* Ombra netta, non sfuocata */
-            font-size: 115px;
+            text-shadow: 5px 5px 0px #440000;
+            font-size: 120px;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
         #terminale {
@@ -74,7 +84,7 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            width: 90%;
+            width: 95%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -83,7 +93,7 @@
 
         #cursore {
             display: inline-block;
-            width: 25px; height: 45px;
+            width: 30px; height: 50px;
             background-color: #00ff41;
             animation: lampeggia 1s step-end infinite;
             vertical-align: bottom;
@@ -91,21 +101,22 @@
 
         @keyframes lampeggia { 50% { opacity: 0; } }
 
-        /* --- GLITCH VELOCE (PER TRANSIZIONI) --- */
+        /* --- GLITCH VELOCE --- */
         .glitch-flash { animation: glitch-flash-anim 0.2s ease-out; }
         @keyframes glitch-flash-anim {
             0% { transform: translate(0); filter: invert(0); }
-            30% { transform: translate(-50px, 20px) skewX(20deg); filter: invert(1); }
-            60% { transform: translate(50px, -20px) scale(1.2); filter: hue-rotate(90deg); }
+            30% { transform: translate(-60px, 30px) skewX(30deg); filter: invert(1); }
             100% { transform: translate(0); filter: invert(0); }
         }
 
-        /* --- GLITCH FINALE (COLLASSO) --- */
-        .glitch-attivo { animation: glitch-anim 0.15s infinite; }
+        /* --- GLITCH FINALE ESTESO --- */
+        .glitch-attivo { animation: glitch-anim 0.1s infinite; }
         @keyframes glitch-anim {
-            0% { transform: translate(0); }
-            20% { transform: translate(-30px, 20px) scale(1.1); filter: invert(1); }
-            100% { transform: translate(0) scale(2); opacity: 0; }
+            0% { transform: translate(0) scale(1); }
+            10% { transform: translate(-40px, 20px) scale(1.1); filter: invert(1); }
+            30% { transform: translate(40px, -20px) rotate(1deg); filter: hue-rotate(90deg); }
+            50% { transform: translate(-10px, 10px) scale(1.5); }
+            100% { transform: translate(0) scale(2.2); opacity: 0; }
         }
 
         #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; display: none; }
@@ -127,7 +138,6 @@
     <div id="flash-luce"></div>
 
     <script>
-        // MODALITA_TEST = true per saltare i tempi lunghi durante le prove
         const MODALITA_TEST = false; 
         const mTempo = MODALITA_TEST ? 0.05 : 1; 
 
@@ -151,8 +161,7 @@
             span.className = classeCss;
             target.appendChild(span);
             cursore.style.backgroundColor = getComputedStyle(span).color;
-            if (classeCss.includes('verde')) cursore.style.boxShadow = `0 0 15px #00ff41`;
-            else cursore.style.boxShadow = `none`;
+            cursore.style.boxShadow = `0 0 15px ${getComputedStyle(span).color}`;
 
             for (let char of testo) {
                 if (char === '\n') span.appendChild(document.createElement('br'));
@@ -162,7 +171,7 @@
         }
 
         async function avviaIntro() {
-            // [ 1. INIZIALIZZAZIONE BIOS ]
+            // [ 1. BIOS ]
             await scrivi("MURENA_OS v.9.5.1 BIOS Revision 4.2\n", "testo-bios", testoDos, 10);
             await pausa(500);
             await scrivi("Checking RAM... 640K OK\n", "testo-bios", testoDos, 10);
@@ -172,7 +181,6 @@
             await scrivi("Loading instruments... FATAL ERROR.\n", "testo-bios", testoDos, 20);
             await pausa(2000);
 
-            // GLITCH TRANSIZIONE IA
             await triggerGlitch();
             testoDos.innerHTML = "";
             await pausa(500);
@@ -185,54 +193,57 @@
             await scrivi("STATO: Carne, ossa, sudore. OBSOLETI.\n", "glow-verde", testoDos, 50);
             await pausa(4000);
 
-            // GLITCH TRANSIZIONE CENTRO
             await triggerGlitch();
             testoDos.innerHTML = "";
             await pausa(500);
 
-            // [ 3. LA SFIDA CUBITALE ]
+            // [ 3. LA SFIDA - POMPATA ]
             await scrivi("LA REALTÀ È COMPROMESSA.\n", "glow-verde-cubitale", containerCentrale, 60);
             await pausa(1500);
             await scrivi("Per sopravvivere al collasso, dovete rinunciare al vostro corpo.\n", "glow-verde-cubitale", containerCentrale, 60);
-            await pausa(2500);
+            await pausa(2000);
             
-            await scrivi("\nAvete il coraggio di abbandonare la materia e diventare puro codice?\n", "glow-verde", containerCentrale, 40);
-            await scrivi("[Y] Accetta la digitalizzazione / [N] Muori nell'oblio\n", "glow-verde", containerCentrale, 40);
-            await scrivi("In attesa di input... _", "glow-verde", containerCentrale, 10);
+            // LA DOMANDA MASSICCIA
+            await scrivi("\nAVETE IL CORAGGIO DI DIVENTARE PURO CODICE?\n", "glow-verde-domanda", containerCentrale, 80);
+            await pausa(1000);
+            await scrivi("[Y] ACCETTA DIGITALIZZAZIONE / [N] OBLIO\n", "glow-verde", containerCentrale, 40);
+            await scrivi("IN ATTESA DI INPUT... _", "glow-verde", containerCentrale, 10);
             
             await pausa(8000);
 
-            // [ 4. OVERRIDE E RISPOSTA ]
+            // [ 4. RISPOSTA HACKER ]
             containerCentrale.innerHTML = "";
-            await scrivi("> sudo force_override --target=CORE_SYSTEM --identity=JAZZ_HIGHLANDER\n", "glow-codice", containerCentrale, 15);
+            await scrivi("< sudo force_override --identity=JAZZ_HIGHLANDER >\n", "glow-codice", containerCentrale, 20);
             await pausa(800);
-            await scrivi("> FORZATURA DI SISTEMA INIZIATA...\n\n", "glow-verde", containerCentrale, 30);
+            await scrivi("< ESECUZIONE OVERRIDE... >\n\n", "glow-verde", containerCentrale, 30);
             await pausa(2000);
 
-            // NOI NON MORIAMO (ROSSO SOLIDO)
-            await scrivi("NOI NON MORIAMO.\n", "glow-highlander", containerCentrale, 80);
+            // NOI NON MORIAMO
+            await scrivi("< NOI NON MORIAMO. >\n", "glow-highlander", containerCentrale, 80);
             await pausa(2500);
             
             // NOI SIAMO I JAZZ HIGHLANDER
-            await scrivi("NOI SIAMO I JAZZ HIGHLANDER.", "glow-highlander", containerCentrale, 110);
+            await scrivi("< NOI SIAMO I JAZZ HIGHLANDER. >", "glow-highlander", containerCentrale, 110);
 
-            // [ 5. COLLASSO FINALE ]
+            // [ 5. COLLASSO FINALE LUNGO ]
             await pausa(3000);
             terminale.classList.add("glitch-attivo");
             canvasMatrix.style.display = "block";
             avviaMatrixRain();
 
-            await pausa(2000 * mTempo);
+            // Allungato il glitch a 4 secondi (invece di 2)
+            await pausa(4000 * mTempo);
             terminale.style.display = "none";
             
+            // La pioggia Matrix continua un altro po'
             await new Promise(r => setTimeout(r, 3000));
 
             // FLASH
             flashLuce.style.opacity = "1";
             await pausa(200);
-            flashLuce.style.transition = "opacity 3s ease-in";
+            flashLuce.style.transition = "opacity 4s ease-in"; // Sfuma ancora più piano
             flashLuce.style.opacity = "0";
-            await pausa(3000);
+            await pausa(4000);
             canvasMatrix.style.display = "none";
         }
 
@@ -241,23 +252,23 @@
             canvasMatrix.width = window.innerWidth;
             canvasMatrix.height = window.innerHeight;
             const chars = 'JAZZHIGHLANDER01010101ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏ';
-            const fontSize = 30;
+            const fontSize = 35;
             const columns = canvasMatrix.width / fontSize;
             const drops = Array(Math.floor(columns)).fill(1);
 
             function draw() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
                 ctx.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
                 ctx.fillStyle = '#00ff41';
-                ctx.font = fontSize + 'px monospace';
+                ctx.font = 'bold ' + fontSize + 'px monospace';
                 drops.forEach((y, i) => {
                     const text = chars.charAt(Math.floor(Math.random() * chars.length));
                     ctx.fillText(text, i * fontSize, y * fontSize);
-                    if (y * fontSize > canvasMatrix.height && Math.random() > 0.975) drops[i] = 0;
+                    if (y * fontSize > canvasMatrix.height && Math.random() > 0.98) drops[i] = 0;
                     drops[i]++;
                 });
             }
-            setInterval(draw, 33);
+            setInterval(draw, 30);
         }
 
         avviaIntro();
