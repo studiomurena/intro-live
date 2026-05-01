@@ -206,7 +206,7 @@
             // LA DOMANDA MASSICCIA
             await scrivi("\nAVETE IL CORAGGIO DI DIVENTARE PURO CODICE?\n", "glow-verde-domanda", containerCentrale, 80);
             await pausa(1000);
-            await scrivi("[Y] ACCETTA DIGITALIZZAZIONE / [N] OBLIO\n", "glow-verde", containerCentrale, 40);
+            await scrivi("[Y] ACCETTA / [N] OBLIO\n", "glow-verde", containerCentrale, 40);
             await scrivi("IN ATTESA DI INPUT... _", "glow-verde", containerCentrale, 10);
             
             await pausa(8000);
@@ -219,11 +219,11 @@
             containerCentrale.innerHTML = "";
             await scrivi("< sudo force_override --identity=JAZZ_HIGHLANDER >\n", "glow-codice", containerCentrale, 20);
             await pausa(800);
-            await scrivi("< ESECUZIONE OVERRIDE... >\n\n", "glow-verde", containerCentrale, 30);
+            await scrivi("<OVERRIDE EXE... >\n\n", "glow-verde", containerCentrale, 30);
             await pausa(2000);
 
             // HACKING DEL SISTEMA
-            await scrivi("< INJECTION COMPLETATA. IA DISABILITATA. >\n", "glow-highlander", containerCentrale, 60);
+            await scrivi("< INJECTION COMPLETE. >\n", "glow-highlander", containerCentrale, 60);
             await pausa(2500);
             
             // IL BOSS TORNA INCAZZATISSIMO APPENA PRIMA DI DIRGLI CHI SIAMO
@@ -231,7 +231,7 @@
             playBossAnim('ai-boss-angry', 0.7, 'rgba(255, 0, 0, 0.5)'); 
 
             // LA RIVELAZIONE
-            await scrivi("< IL SISTEMA È NOSTRO. NOI SIAMO I JAZZ HIGHLANDER. >", "glow-highlander", containerCentrale, 90);
+            await scrivi("< THE SYSTEM COLLAPSE! WE'RE IN! >", "glow-highlander", containerCentrale, 90);
 
             // [ 5. IL COLLASSO IN MATRIX PIOGGIA ]
             await pausa(3000);
