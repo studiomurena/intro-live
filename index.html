@@ -70,16 +70,18 @@
             100% { transform: translate(0) scale(2.2); opacity: 0; }
         }
 
-        /* --- IL BOSS (Dietro al testo, davanti al nero) --- */
+        /* --- IL BOSS CONTAINER --- */
+        #boss-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2; pointer-events: none;
+        }
+
         #boss-canvas {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            height: 100vh; /* Riempie lo schermo mantenendo le proporzioni */
-            image-rendering: pixelated; /* Evita sgranature, mantiene l'effetto 16-bit */
-            z-index: 2; 
-            opacity: 0; /* Invisibile all'inizio */
-            transition: opacity 1.5s ease-in-out;
+            height: 100vh; 
+            image-rendering: pixelated; 
+            opacity: 0; 
+            transition: opacity 0.3s ease-in-out; 
             filter: drop-shadow(0 0 30px rgba(0, 255, 65, 0.2));
         }
 
@@ -91,8 +93,9 @@
 
     <div id="crt-overlay"></div>
 
-    <!-- IL MEGA TESTONE DELL'IA -->
-    <canvas id="boss-canvas" width="256" height="256"></canvas>
+    <div id="boss-wrapper">
+        <canvas id="boss-canvas" width="256" height="256"></canvas>
+    </div>
 
     <div id="terminale">
         <div id="area-dos">
@@ -122,7 +125,6 @@
         let bossInterval;
         const bossImage = new Image();
 
-        // Funzione per animare la spritesheet 5x5 del Boss in JS puro!
         function playBossAnim(nomeFile, opacita, coloreLuce = 'rgba(0, 255, 65, 0.2)') {
             bossImage.src = `assets/${nomeFile}.png`;
             bossCanvas.style.opacity = opacita;
@@ -133,18 +135,19 @@
                 bossCtx.clearRect(0, 0, 256, 256);
                 let col = bossFrame % 5;
                 let row = Math.floor(bossFrame / 5);
-                // Ritaglia il frame 256x256 dalla griglia 1280x1280
                 bossCtx.drawImage(bossImage, col * 256, row * 256, 256, 256, 0, 0, 256, 256);
                 bossFrame = (bossFrame + 1) % 25;
-            }, 1000 / 12); // 12 FPS per un look da terminale/macchina
+            }, 1000 / 12); 
         }
 
         const pausa = (ms) => new Promise(resolve => setTimeout(resolve, ms * mTempo));
 
-        async function triggerGlitch() {
-            terminale.classList.add('glitch-flash');
+        async function triggerGlitch(suTerminale = true, suBoss = false) {
+            if (suTerminale) terminale.classList.add('glitch-flash');
+            if (suBoss) bossCanvas.classList.add('glitch-flash');
             await pausa(200);
-            terminale.classList.remove('glitch-flash');
+            if (suTerminale) terminale.classList.remove('glitch-flash');
+            if (suBoss) bossCanvas.classList.remove('glitch-flash');
         }
 
         async function scrivi(testo, classeCss, target, velocita = 40) {
@@ -172,12 +175,9 @@
             await scrivi("Loading instruments... FATAL ERROR.\n", "testo-bios", testoDos, 20);
             await pausa(2000);
 
-            await triggerGlitch();
+            await triggerGlitch(true, false);
             testoDos.innerHTML = "";
             await pausa(500);
-
-            // APPARE IL BOSS (Soffuso in background, parla)
-            playBossAnim('ai-boss-talk', 0.25);
 
             // [ 2. ANALISI IA ]
             await scrivi("ERRORE DI SISTEMA: MATERIA ORGANICA RILEVATA.\n", "glow-verde", testoDos, 25);
@@ -187,16 +187,22 @@
             await scrivi("STATO: Carne, ossa, sudore. OBSOLETI.\n", "glow-verde", testoDos, 50);
             await pausa(4000);
 
-            await triggerGlitch();
+            await triggerGlitch(true, false);
             testoDos.innerHTML = "";
             await pausa(500);
 
-            // [ 3. LA SFIDA CUBITALE ]
+            // [ 3. LA SFIDA CUBITALE E INGRESSO DEL BOSS ]
+            
+            // IL BOSS ENTRA CON UN GLITCH ESATTAMENTE QUI!
+            triggerGlitch(true, true); 
+            playBossAnim('ai-boss-talk', 0.4); 
+            
             await scrivi("LA REALTÀ È COMPROMESSA.\n", "glow-verde-cubitale", containerCentrale, 60);
             await pausa(1500);
             await scrivi("Per sopravvivere al collasso, dovete rinunciare al vostro corpo.\n", "glow-verde-cubitale", containerCentrale, 60);
             await pausa(2000);
             
+            // LA DOMANDA MASSICCIA
             await scrivi("\nAVETE IL CORAGGIO DI DIVENTARE PURO CODICE?\n", "glow-verde-domanda", containerCentrale, 80);
             await pausa(1000);
             await scrivi("[Y] ACCETTA DIGITALIZZAZIONE / [N] OBLIO\n", "glow-verde", containerCentrale, 40);
@@ -204,10 +210,11 @@
             
             await pausa(8000);
 
-            // IL BOSS SI INCAZZA E DIVENTA PIÙ VISIBILE E ROSSASTRO (0.6 opacità)
-            playBossAnim('ai-boss-angry', 0.6, 'rgba(255, 0, 0, 0.4)');
-
             // [ 4. RISPOSTA HACKER ]
+            
+            // IL BOSS SPARISCE QUANDO SCRIVIAMO IL CODICE
+            bossCanvas.style.opacity = "0";
+
             containerCentrale.innerHTML = "";
             await scrivi("< sudo force_override --identity=JAZZ_HIGHLANDER >\n", "glow-codice", containerCentrale, 20);
             await pausa(800);
@@ -218,6 +225,10 @@
             await scrivi("< NOI NON MORIAMO. >\n", "glow-highlander", containerCentrale, 80);
             await pausa(2500);
             
+            // IL BOSS TORNA INCAZZATISSIMO APPENA PRIMA DI DIRGLI CHI SIAMO
+            triggerGlitch(true, true);
+            playBossAnim('ai-boss-angry', 0.7, 'rgba(255, 0, 0, 0.5)'); 
+
             // NOI SIAMO I JAZZ HIGHLANDER
             await scrivi("< NOI SIAMO I JAZZ HIGHLANDER. >", "glow-highlander", containerCentrale, 110);
 
@@ -226,7 +237,7 @@
             terminale.classList.add("glitch-attivo");
             canvasMatrix.style.display = "block";
             
-            let idPioggia = avviaMatrixRain(); // Avvia la pioggia normale
+            let idPioggia = avviaMatrixRain();
 
             await pausa(4000 * mTempo);
             terminale.style.display = "none";
@@ -235,25 +246,24 @@
             flashLuce.style.opacity = "1";
             await pausa(150);
 
-            // NEL MOMENTO DEL FLASH, CAMBIA TUTTO: IL BOSS SPALANCA LA BOCCA E IL CODICE DIVENTA UN VORTICE
-            clearInterval(idPioggia); // Stoppa la pioggia dritta
-            playBossAnim('ai-boss-tunnel', 1.0, 'rgba(255, 255, 255, 0.5)'); // Boss al massimo della potenza!
-            avviaMatrixVortex(); // Parte il Vortice succhia-profondità
+            // FLASH! CAMBIA TUTTO: IL BOSS SPALANCA LA BOCCA
+            clearInterval(idPioggia); 
+            playBossAnim('ai-boss-tunnel', 1.0, 'rgba(255, 255, 255, 0.6)'); 
+            avviaMatrixVortex(); // Parte il Vortice!
 
             flashLuce.style.transition = "opacity 4s ease-out"; 
             flashLuce.style.opacity = "0";
 
-            // Lasciamo girare il vortice e la bocca aperta per un bel po' prima del nero finale
             await pausa(6000);
             
-            // Fade out nero assoluto
+            // Fade out totale verso il nero
             bossCanvas.style.transition = "opacity 2s ease";
             bossCanvas.style.opacity = "0";
             canvasMatrix.style.transition = "opacity 2s ease";
             canvasMatrix.style.opacity = "0";
         }
 
-        // --- MOTORE PIOGGIA NORMALE (Pre-Flash) ---
+        // --- MOTORE PIOGGIA NORMALE ---
         function avviaMatrixRain() {
             const ctx = canvasMatrix.getContext('2d');
             canvasMatrix.width = window.innerWidth;
@@ -264,7 +274,7 @@
             const drops = Array(Math.floor(columns)).fill(1);
 
             return setInterval(() => {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; // Più nero per oscurare il boss dietro
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; 
                 ctx.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
                 ctx.fillStyle = '#00ff41';
                 ctx.font = 'bold ' + fontSize + 'px monospace';
@@ -277,7 +287,7 @@
             }, 30);
         }
 
-        // --- MOTORE VORTICE SUCCHIA-PROFONDITÀ (Post-Flash) ---
+        // --- MOTORE VORTICE ---
         function avviaMatrixVortex() {
             const ctx = canvasMatrix.getContext('2d');
             canvasMatrix.width = window.innerWidth;
@@ -288,30 +298,25 @@
             let cx = canvasMatrix.width / 2;
             let cy = canvasMatrix.height / 2;
 
-            // Crea 800 particelle di codice
             for(let i=0; i<800; i++) {
                 particelle.push({
                     angolo: Math.random() * Math.PI * 2,
                     raggio: Math.random() * Math.max(cx, cy) * 1.5,
-                    velocita: Math.random() * 15 + 5, // Molto veloce verso il centro
-                    rotazione: (Math.random() - 0.5) * 0.1, // Spin a spirale
+                    velocita: Math.random() * 35 + 20, 
+                    rotazione: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.15 + 0.1), 
                     dimensioneBase: Math.random() * 40 + 10,
                     carattere: chars.charAt(Math.floor(Math.random() * chars.length))
                 });
             }
 
             setInterval(() => {
-                // Sfondo semitrasparente scuro per lasciare la scia, 
-                // MA abbastanza leggero da lasciar vedere bene l'ai-boss-tunnel dietro!
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
                 ctx.fillRect(0, 0, canvasMatrix.width, canvasMatrix.height);
 
                 particelle.forEach(p => {
-                    // Risucchio verso il centro!
                     p.raggio -= p.velocita;
                     p.angolo += p.rotazione;
 
-                    // Se arriva al centro (nella bocca), rinasce ai bordi dello schermo
                     if(p.raggio < 5) {
                         p.raggio = Math.max(cx, cy) * 1.5;
                         p.carattere = chars.charAt(Math.floor(Math.random() * chars.length));
@@ -320,18 +325,16 @@
                     let x = cx + Math.cos(p.angolo) * p.raggio;
                     let y = cy + Math.sin(p.angolo) * p.raggio;
                     
-                    // La prospettiva: più è vicino al centro (lontano in profondità), più è piccolo!
                     let scalaPerspettiva = p.raggio / Math.max(cx, cy);
                     let dimensioneAttuale = Math.max(1, p.dimensioneBase * scalaPerspettiva);
 
-                    // Diventa sempre più rosso/arancio man mano che si avvicina alla bocca
                     let mixColore = Math.floor(scalaPerspettiva * 255);
                     ctx.fillStyle = `rgb(255, ${mixColore}, 65)`; 
 
                     ctx.font = 'bold ' + dimensioneAttuale + 'px monospace';
                     ctx.fillText(p.carattere, x, y);
                 });
-            }, 30);
+            }, 20);
         }
 
         avviaIntro();
