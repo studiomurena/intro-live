@@ -8,8 +8,7 @@
     
     <style>
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: #000;
             display: flex;
             justify-content: flex-start;
@@ -19,43 +18,47 @@
             font-family: 'VT323', monospace;
         }
 
-        /* --- EFFETTI MONITOR CRT ESTREMI --- */
+        /* --- EFFETTI MONITOR CRT --- */
         #crt-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 900;
             pointer-events: none;
             background: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                 linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
             background-size: 100% 4px, 4px 100%;
         }
 
-        /* --- TESTO ULTRA LUMINOSO --- */
+        /* --- STILI TESTO --- */
+        .testo-bios { color: #ffffff; font-size: 35px; opacity: 0.9; }
+        
         .glow-verde {
             color: #00ff41;
-            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+            text-shadow: 0 0 10px #00ff41;
             font-size: 48px;
         }
 
         .glow-verde-cubitale {
             color: #00ff41;
-            text-shadow: 0 0 15px #00ff41, 0 0 30px #00ff41;
+            text-shadow: 0 0 15px #00ff41;
             font-size: 75px;
             line-height: 1.1;
         }
 
         .glow-codice {
-            color: #ffaa00; /* Arancione ambra per il codice forzato */
+            color: #ffaa00;
             text-shadow: 0 0 10px #ffaa00;
             font-size: 40px;
         }
 
+        /* ROSSO ALTO CONTRASTO - MENO LUMEN AI BORDI */
         .glow-highlander {
-            color: #ff3131;
-            text-shadow: 0 0 20px #ff3131, 0 0 40px #ff3131, 0 0 60px #ff3131;
-            font-size: 110px;
+            color: #ff0000;
+            text-shadow: 4px 4px 0px #440000; /* Ombra netta, non sfuocata */
+            font-size: 115px;
             font-weight: bold;
+            letter-spacing: 2px;
         }
 
         #terminale {
@@ -84,17 +87,24 @@
             background-color: #00ff41;
             animation: lampeggia 1s step-end infinite;
             vertical-align: bottom;
-            box-shadow: 0 0 15px #00ff41;
         }
 
         @keyframes lampeggia { 50% { opacity: 0; } }
 
-        /* --- GLITCH --- */
+        /* --- GLITCH VELOCE (PER TRANSIZIONI) --- */
+        .glitch-flash { animation: glitch-flash-anim 0.2s ease-out; }
+        @keyframes glitch-flash-anim {
+            0% { transform: translate(0); filter: invert(0); }
+            30% { transform: translate(-50px, 20px) skewX(20deg); filter: invert(1); }
+            60% { transform: translate(50px, -20px) scale(1.2); filter: hue-rotate(90deg); }
+            100% { transform: translate(0); filter: invert(0); }
+        }
+
+        /* --- GLITCH FINALE (COLLASSO) --- */
         .glitch-attivo { animation: glitch-anim 0.15s infinite; }
         @keyframes glitch-anim {
-            0% { transform: translate(0); filter: hue-rotate(0deg); }
+            0% { transform: translate(0); }
             20% { transform: translate(-30px, 20px) scale(1.1); filter: invert(1); }
-            40% { transform: translate(30px, -20px) skew(10deg); }
             100% { transform: translate(0) scale(2); opacity: 0; }
         }
 
@@ -117,9 +127,9 @@
     <div id="flash-luce"></div>
 
     <script>
-        // MODALITA_TEST = true per vedere tutto in 10 secondi
+        // MODALITA_TEST = true per saltare i tempi lunghi durante le prove
         const MODALITA_TEST = false; 
-        const mTempo = MODALITA_TEST ? 0.1 : 1; 
+        const mTempo = MODALITA_TEST ? 0.05 : 1; 
 
         const testoDos = document.getElementById('testo-dos');
         const containerCentrale = document.getElementById('container-centrale');
@@ -130,64 +140,84 @@
 
         const pausa = (ms) => new Promise(resolve => setTimeout(resolve, ms * mTempo));
 
+        async function triggerGlitch() {
+            terminale.classList.add('glitch-flash');
+            await pausa(200);
+            terminale.classList.remove('glitch-flash');
+        }
+
         async function scrivi(testo, classeCss, target, velocita = 40) {
             let span = document.createElement('span');
             span.className = classeCss;
             target.appendChild(span);
-            // Il cursore segue il colore del testo corrente
             cursore.style.backgroundColor = getComputedStyle(span).color;
-            cursore.style.boxShadow = `0 0 15px ${getComputedStyle(span).color}`;
+            if (classeCss.includes('verde')) cursore.style.boxShadow = `0 0 15px #00ff41`;
+            else cursore.style.boxShadow = `none`;
 
             for (let char of testo) {
-                if (char === '\n') {
-                    span.appendChild(document.createElement('br'));
-                } else {
-                    span.innerHTML += char;
-                }
+                if (char === '\n') span.appendChild(document.createElement('br'));
+                else span.innerHTML += char;
                 await pausa(velocita + (Math.random() * 20 - 10));
             }
         }
 
         async function avviaIntro() {
-            // [ 0:00 ] INIZIO: TESTO DOS RAPIDO
-            await scrivi("ERRORE DI SISTEMA: MATERIA ORGANICA RILEVATA.\n", "glow-verde", testoDos, 20);
+            // [ 1. INIZIALIZZAZIONE BIOS ]
+            await scrivi("MURENA_OS v.9.5.1 BIOS Revision 4.2\n", "testo-bios", testoDos, 10);
+            await pausa(500);
+            await scrivi("Checking RAM... 640K OK\n", "testo-bios", testoDos, 10);
+            await pausa(600);
+            await scrivi("Loading audio drivers... OK\n", "testo-bios", testoDos, 10);
             await pausa(1000);
-            await scrivi("ANALISI IN CORSO: Carma, Ferrazzi, Gazzola, Nan, Falcon.\n", "glow-verde", testoDos, 20);
+            await scrivi("Loading instruments... FATAL ERROR.\n", "testo-bios", testoDos, 20);
+            await pausa(2000);
+
+            // GLITCH TRANSIZIONE IA
+            await triggerGlitch();
+            testoDos.innerHTML = "";
+            await pausa(500);
+
+            // [ 2. ANALISI IA ]
+            await scrivi("ERRORE DI SISTEMA: MATERIA ORGANICA RILEVATA.\n", "glow-verde", testoDos, 25);
+            await pausa(1000);
+            await scrivi("ANALISI IN CORSO: Carma, Ferrazzi, Gazzola, Nan, Falcon.\n", "glow-verde", testoDos, 25);
             await pausa(1500);
             await scrivi("STATO: Carne, ossa, sudore. OBSOLETI.\n", "glow-verde", testoDos, 50);
             await pausa(4000);
 
-            // [ 0:15 ] CANCELLA E CENTRA: TESTO CUBITALE
+            // GLITCH TRANSIZIONE CENTRO
+            await triggerGlitch();
             testoDos.innerHTML = "";
+            await pausa(500);
+
+            // [ 3. LA SFIDA CUBITALE ]
             await scrivi("LA REALTÀ È COMPROMESSA.\n", "glow-verde-cubitale", containerCentrale, 60);
             await pausa(1500);
             await scrivi("Per sopravvivere al collasso, dovete rinunciare al vostro corpo.\n", "glow-verde-cubitale", containerCentrale, 60);
             await pausa(2500);
             
-            // LA DOMANDA
             await scrivi("\nAvete il coraggio di abbandonare la materia e diventare puro codice?\n", "glow-verde", containerCentrale, 40);
             await scrivi("[Y] Accetta la digitalizzazione / [N] Muori nell'oblio\n", "glow-verde", containerCentrale, 40);
             await scrivi("In attesa di input... _", "glow-verde", containerCentrale, 10);
             
-            // Suspense (Silenzio / Battito)
             await pausa(8000);
 
-            // [ 0:45 ] LA RISPOSTA - FORZATURA
+            // [ 4. OVERRIDE E RISPOSTA ]
             containerCentrale.innerHTML = "";
-            await scrivi("> sudo force_override --target=CORE_SYSTEM\n", "glow-codice", containerCentrale, 10);
-            await pausa(500);
-            await scrivi("> FORZATURA DI SISTEMA INIZIATA...\n\n", "glow-verde", containerCentrale, 20);
-            await pausa(1500);
-
-            // NOI NON MORIAMO
-            await scrivi("NOI NON MORIAMO.\n", "glow-highlander", containerCentrale, 80);
+            await scrivi("> sudo force_override --target=CORE_SYSTEM --identity=JAZZ_HIGHLANDER\n", "glow-codice", containerCentrale, 15);
+            await pausa(800);
+            await scrivi("> FORZATURA DI SISTEMA INIZIATA...\n\n", "glow-verde", containerCentrale, 30);
             await pausa(2000);
+
+            // NOI NON MORIAMO (ROSSO SOLIDO)
+            await scrivi("NOI NON MORIAMO.\n", "glow-highlander", containerCentrale, 80);
+            await pausa(2500);
             
             // NOI SIAMO I JAZZ HIGHLANDER
-            await scrivi("NOI SIAMO I JAZZ HIGHLANDER.", "glow-highlander", containerCentrale, 100);
+            await scrivi("NOI SIAMO I JAZZ HIGHLANDER.", "glow-highlander", containerCentrale, 110);
 
-            // [ 1:10 ] GLITCH E MATRIX
-            await pausa(2500);
+            // [ 5. COLLASSO FINALE ]
+            await pausa(3000);
             terminale.classList.add("glitch-attivo");
             canvasMatrix.style.display = "block";
             avviaMatrixRain();
@@ -195,10 +225,9 @@
             await pausa(2000 * mTempo);
             terminale.style.display = "none";
             
-            // Pioggia per qualche secondo
             await new Promise(r => setTimeout(r, 3000));
 
-            // FLASH FINALE
+            // FLASH
             flashLuce.style.opacity = "1";
             await pausa(200);
             flashLuce.style.transition = "opacity 3s ease-in";
@@ -211,7 +240,7 @@
             const ctx = canvasMatrix.getContext('2d');
             canvasMatrix.width = window.innerWidth;
             canvasMatrix.height = window.innerHeight;
-            const chars = 'JAZZHIGHLANDER01010101ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ';
+            const chars = 'JAZZHIGHLANDER01010101ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏ';
             const fontSize = 30;
             const columns = canvasMatrix.width / fontSize;
             const drops = Array(Math.floor(columns)).fill(1);
