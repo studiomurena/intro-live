@@ -86,7 +86,7 @@
         }
 
         #matrix-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; display: none; }
-        #flash-luce { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 9999; opacity: 0; }
+        #flash-luce { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 9999; opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -182,7 +182,8 @@
             // [ 2. ANALISI IA ]
             await scrivi("ERRORE DI SISTEMA: MATERIA ORGANICA RILEVATA.\n", "glow-verde", testoDos, 25);
             await pausa(1000);
-            await scrivi("ANALISI IN CORSO: Carma, Ferrazzi, Gazzola, Nan, Falcon.\n", "glow-verde", testoDos, 25);
+            // AGGIORNATO QUI: STUDIO MURENA
+            await scrivi("ANALISI IN CORSO: Studio Murena.\n", "glow-verde", testoDos, 25);
             await pausa(1500);
             await scrivi("STATO: Carne, ossa, sudore. OBSOLETI.\n", "glow-verde", testoDos, 50);
             await pausa(4000);
@@ -221,16 +222,16 @@
             await scrivi("< ESECUZIONE OVERRIDE... >\n\n", "glow-verde", containerCentrale, 30);
             await pausa(2000);
 
-            // NOI NON MORIAMO
-            await scrivi("< NOI NON MORIAMO. >\n", "glow-highlander", containerCentrale, 80);
+            // HACKING DEL SISTEMA
+            await scrivi("< INJECTION COMPLETATA. IA DISABILITATA. >\n", "glow-highlander", containerCentrale, 60);
             await pausa(2500);
             
             // IL BOSS TORNA INCAZZATISSIMO APPENA PRIMA DI DIRGLI CHI SIAMO
             triggerGlitch(true, true);
             playBossAnim('ai-boss-angry', 0.7, 'rgba(255, 0, 0, 0.5)'); 
 
-            // NOI SIAMO I JAZZ HIGHLANDER
-            await scrivi("< NOI SIAMO I JAZZ HIGHLANDER. >", "glow-highlander", containerCentrale, 110);
+            // LA RIVELAZIONE
+            await scrivi("< IL SISTEMA È NOSTRO. NOI SIAMO I JAZZ HIGHLANDER. >", "glow-highlander", containerCentrale, 90);
 
             // [ 5. IL COLLASSO IN MATRIX PIOGGIA ]
             await pausa(3000);
